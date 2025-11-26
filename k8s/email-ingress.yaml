@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: api.akrzen.cloud
+    - host: email-serveur.akrzen.cloud
       http:
         paths:
           - path: /
@@ -20,5 +20,5 @@ spec:
                   number: 3001
   tls:
     - hosts:
-        - api.akrzen.cloud
+        - email-serveur.akrzen.cloud
       secretName: email-tls
