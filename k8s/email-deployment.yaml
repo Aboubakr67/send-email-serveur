@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-server
+  labels:
+    app: email-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: email-server
+  template:
+    metadata:
+      labels:
+        app: email-server
+    spec:
+      containers:
+        - name: email-server
+          image: email-server:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3001
+          env:
+            # Variables depuis le Secret
+            - name: EMAIL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: email-secrets
+                  key: email-user
+            - name: EMAIL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: email-secrets
+                  key: email-pass
+            - name: SMTP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: email-secrets
+                  key: smtp-host
+            - name: SMTP_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: email-secrets
+                  key: smtp-port
+            # Variables normales
+            - name: PORT
+              value: "3001"
+            - name: FRONTEND_URL
+              value: "https://akrzen.cloud"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 10

@@ -168,6 +168,10 @@ app.post("/send-email", limiter, async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send({ status: "ok" });
+});
+
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`✅ Serveur sur http://localhost:${PORT}`);
